@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "grocery_list_item_#{params[:id]}" do %>
+  <%= render partial: 'grocery_list_item', locals: { item: current_user.grocery_list_items.find(params[:id]) } %>
+<% end %>

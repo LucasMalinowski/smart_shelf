@@ -1,0 +1,9 @@
+<li id="grocery_list_item_<%= item.id %>" class="list-group-item d-flex justify-content-between align-items-center">
+  <%= item.item.name %>
+  <div class="d-flex align-items-center">
+    <%= button_to '-', grocery_list_item_path(item), method: :put, params: { quantity: item.quantity - 1 }, class: 'btn btn-secondary btn-sm me-2', data: { turbo_action: 'replace' } %>
+    <%= item.quantity %>
+    <%= button_to '+', grocery_list_item_path(item), method: :put, params: { quantity: item.quantity + 1 }, class: 'btn btn-primary btn-sm ms-2', data: { turbo_action: 'replace' } %>
+    <%= button_to 'X', grocery_list_item_path(item), method: :delete, class: 'btn btn-danger btn-sm ms-2', data: { turbo_action: 'replace' } %>
+  </div>
+</li>

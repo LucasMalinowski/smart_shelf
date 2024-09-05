@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "quantity-#{params[:id]}" do %>
+  <span id="quantity-<%= params[:id] %>"><%= current_user.user_items.find(params[:id]).quantity %></span>
+<% end %>
