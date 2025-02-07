@@ -1,46 +1,43 @@
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-dark-subtle bg-gradient">
-  <!-- Container wrapper -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <div class="d-flex flex-row">
-      <a class="" href="#">
-        <%= image_tag("logo.png", class: "img-fluid", style:"width: 80px; height: 60px") %>
-      </a>
-    </div>
-    <div class="d-flex flex-row">
-
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-row gap-3">
+    <a class="navbar-brand" href="<%= root_path %>">
+      <%= image_tag("logo.png", class: "img-fluid", style:"width: 80px; height: 60px") %>
+    </a>
+    
+    <div class="d-flex align-items-center gap-4">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-row gap-4">
         <li class="nav-item">
-          <%= link_to "Meus Items", root_path, class: "nav-link" %>
+          <%= link_to "Meus Items", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
         </li>
         <li class="nav-item">
-          <%= link_to "Lista de Compras", grocery_list_path, class: "nav-link" %>
+          <%= link_to "Lista de Compras", grocery_list_path, class: "nav-link #{'active' if current_page?(grocery_list_path)}" %>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Conexão Alexa</a>
         </li>
       </ul>
-    </div>
 
-    <!-- Right elements -->
-    <div class="d-flex align-items-center">
-      <!-- Notifications -->
-      <a class="text-reset me-3" href="#" >
-        <i class="fas fa-bell"></i>
-      </a>
-      <!-- Avatar -->
-        <a class="d-flex align-items-center" href="#">
-          <img
-            src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
-            class="rounded-circle"
-            height="25"
-            alt="Black and White Portrait of a Man"
-            loading="lazy"
-            />
+      <div class="d-flex align-items-center gap-4">
+        <button class="btn btn-outline-light" id="darkModeToggle">
+          <i class="fas fa-moon"></i>
+        </button>
+        <a class="text-light" href="#" >
+          <i class="fas fa-bell"></i>
         </a>
+        <div class="dropdown">
+          <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" class="rounded-circle" height="25" alt="Avatar" loading="lazy"/>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+            <li><a class="dropdown-item" href="#">Meu Perfil</a></li>
+            <li><a class="dropdown-item" href="#">Configurações</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "dropdown-item" %>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <!-- Right elements -->
   </div>
-  <!-- Container wrapper -->
 </nav>
-<!-- Navbar -->

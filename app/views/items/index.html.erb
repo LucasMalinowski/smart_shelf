@@ -1,51 +1,88 @@
-<div class="container mt-4 mx-10">
-  <h1 class="text-center mb-4 text-light">Meus Items</h1>
-  <!-- botão p/ Lista de compras-->
-  <div class="text-center">
-    <%= link_to "Lista de Compras", grocery_list_path, class: "btn btn-primary" %>
-  </div>
-
-
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <label for="category_filter">Filtrar por categoria</label>
-      <select id="category_filter" class="form-select">
-        <option value="">Todas as categorias</option>
-        <% @categories.each do |category| %>
-          <option value="<%= category.id %>" <%= 'selected' if params[:category_id].to_i == category.id %>><%= category.name %></option>
-        <% end %>
-      </select>
-    </div>
-
-    <div class="ms-2">
-      <span id="sort_by" class="badge text-bg-success fs-6" aria-expanded="false">
-        Quantidade
-        <i id="sort_icon" class="fas fa-sort"></i>
-      </span>
+<div class="container-fluid py-4">
+  <!-- Header Section -->
+  <div class="container mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <h1 class="h3 mb-0">Meus Items</h1>
+      <%= link_to grocery_list_path, class: "btn btn-primary d-flex align-items-center gap-2" do %>
+        <i class="fas fa-shopping-basket"></i>
+        Lista de Compras
+      <% end %>
     </div>
   </div>
 
-  <div class="row">
-    <% @user_items.each do |user_item| %>
-      <% item = user_item.item %>
-      <div class="col-md-4 mb-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title"><%= item.name %></h5>
-            <h6 class="card-subtitle mb-2 text-muted">Category: <%= item.category.name %></h6>
-            <p class="card-text">Quantity: <span id="quantity-<%= user_item.id %>"><%= user_item.quantity %></span></p>
-            <div class="d-flex justify-content-between">
-              <%= button_to grocery_list_items_path(item_id: user_item.item.id), method: :post, class: 'btn btn-info btn-sm', data: { turbo_action: 'replace' } do %>
-                <i class="fa-solid fa-cart-plus"></i>
-              <% end %>
+  <!-- Filters Section -->
+  <div class="container mb-4">
+    <div class="row g-3 align-items-center">
+      <div class="col-md-4">
+        <div class="input-group">
+          <span class="input-group-text border-end-0">
+            <i class="fas fa-filter text-muted"></i>
+          </span>
+          <select id="category_filter" class="form-select border-start-0">
+            <option value="">Todas as categorias</option>
+            <% @categories.each do |category| %>
+              <option value="<%= category.id %>" <%= 'selected' if params[:category_id].to_i == category.id %>><%= category.name %></option>
+            <% end %>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-auto ms-md-auto">
+        <button id="sort_by" class="btn btn-info d-flex align-items-center gap-2">
+          <i class="fas fa-sort-amount-down"></i>
+          Quantidade
+          <i id="sort_icon" class="fas fa-sort"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 
-              <%= button_to '+', user_items_path(user_item_id: user_item, item_id: item, quantity: 1), method: :post, class: 'btn btn-primary btn-sm', data: { turbo_action: 'replace' } %>
-              <%= button_to '-', user_item_path(user_item), method: :put, params: { quantity: -1 }, class: 'btn btn-secondary btn-sm', data: { turbo_action: 'replace' } %>
+  <!-- Items Grid -->
+  <div class="container">
+    <div class="row g-4">
+      <% @user_items.each do |user_item| %>
+        <% item = user_item.item %>
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+          <div class="card h-100 shadow-sm hover-shadow border-secondary">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h5 class="card-title mb-1"><%= item.name %></h5>
+                  <span class="badge bg-secondary">
+                    <i class="fas fa-tag me-1"></i>
+                    <%= item.category.name %>
+                  </span>
+                </div>
+                <%= button_to grocery_list_items_path(item_id: user_item.item.id),
+                    method: :post,
+                    class: 'btn btn-primary btn-sm',
+                    data: { turbo_action: 'replace' } do %>
+                  <i class="fa-solid fa-cart-plus"></i>
+                <% end %>
+              </div>
+              
+              <div class="d-flex align-items-center justify-content-between mt-3">
+                <div class="d-flex gap-2">
+                  <%= button_to '-',
+                      user_item_path(user_item),
+                      method: :put,
+                      params: { quantity: -1 },
+                      class: 'btn btn-danger',
+                      data: { turbo_action: 'replace' } %>
+                  <span class="btn disabled px-4">
+                    <span id="quantity-<%= user_item.id %>"><%= user_item.quantity %></span>
+                  </span>
+                  <%= button_to '+',
+                      user_items_path(user_item_id: user_item, item_id: item, quantity: 1),
+                      method: :post,
+                      class: 'btn btn-success',
+                      data: { turbo_action: 'replace' } %>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   </div>
 </div>
 
