@@ -1,0 +1,129 @@
+.login-page {
+  height: 100vh;
+  background-color: #2C3E50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.login-shape {
+  position: absolute;
+  background-color: #E67E22;
+  opacity: 0.8;
+}
+
+.login-shape-1 {
+  width: 300px;
+  height: 300px;
+  transform: rotate(45deg);
+  top: -150px;
+  left: -150px;
+}
+
+.login-shape-2 {
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  bottom: -200px;
+  right: -200px;
+}
+
+.login-container {
+  background-color: #ECF0F1;
+  padding: 40px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 380px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.login-container h2 {
+  color: #2C3E50;
+  margin-bottom: 30px;
+  font-size: 2.2em;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.field {
+  margin-bottom: 24px;
+}
+
+.field label {
+  display: block;
+  color: #4B6455;
+  margin-bottom: 8px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.field input[type="email"],
+.field input[type="password"] {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #BDC3C7;
+  background-color: #FFFFFF;
+  color: #2C3E50;
+  border-radius: 6px;
+  font-size: 1.1em;
+  transition: all 0.3s ease;
+}
+
+.field input[type="email"]:focus,
+.field input[type="password"]:focus {
+  outline: none;
+  border-color: #E67E22;
+  box-shadow: 0 0 0 4px rgba(230,126,34,0.15);
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2C3E50;
+  margin-bottom: 24px;
+  font-size: 0.9em;
+}
+
+.login-button {
+  width: 100%;
+  padding: 16px;
+  background-color: #E67E22;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #FFC82E;
+  transform: translateY(-1px);
+}
+
+.links {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.links a {
+  color: #4B6455;
+  text-decoration: none;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.links a:hover {
+  color: #FFD15C;
+}
