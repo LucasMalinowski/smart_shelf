@@ -1,9 +1,9 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg bg-body-subtle border-bottom">
   <div class="container-fluid">
     <a class="navbar-brand" href="<%= root_path %>">
       <%= image_tag("logo.png", class: "img-fluid", style:"width: 80px; height: 60px") %>
     </a>
-    
+
     <div class="d-flex align-items-center gap-4">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-row gap-4">
         <li class="nav-item">
@@ -18,14 +18,15 @@
       </ul>
 
       <div class="d-flex align-items-center gap-4">
-        <button class="btn btn-outline-light" id="darkModeToggle">
+        <button class="btn btn-outline-secondary border-0" id="darkModeToggle">
           <i class="fas fa-moon"></i>
         </button>
-        <a class="text-light" href="#" >
+        <a class="nav-link position-relative" href="#" id="notificationButton">
           <i class="fas fa-bell"></i>
         </a>
         <div class="dropdown">
-          <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="dropdown-toggle d-flex align-items-center hidden-arrow gap-2 text-decoration-none" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="text-body text-decoration-none" style="cursor: pointer; transition: color 0.2s"><%= current_user&.email %></span>
             <img src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" class="rounded-circle" height="25" alt="Avatar" loading="lazy"/>
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">

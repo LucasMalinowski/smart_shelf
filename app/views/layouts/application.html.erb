@@ -9,88 +9,57 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-      [data-bs-theme="dark"] .hover-shadow:hover {
-        box-shadow: 0 0.125rem 0.25rem rgba(255, 255, 255, 0.1) !important;
-      }
-      [data-bs-theme="light"] .hover-shadow:hover {
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1) !important;
-      }
-      :root {
-        --bs-danger-rgb: 255, 180, 180;
-        --bs-success-rgb: 186, 255, 180;
-        --bs-info-rgb: 151, 222, 255;
-        --bs-secondary-rgb: 180, 180, 180;
-      }
-      .btn-danger, .btn-success, .btn-info, .btn-secondary {
-        --bs-btn-color: #212529;
-        --bs-btn-hover-color: #212529;
-      }
-      [data-bs-theme="dark"] nav {
-        background-color: #1a1d20 !important;
-        border-bottom: 1px solid #2c3034;
-      }
-      [data-bs-theme="dark"] .title-section {
-        background-color: #212529;
-        border-bottom: 1px solid #2c3034;
-        padding: 2rem 0;
-        margin-bottom: 2rem;
-      }
-      [data-bs-theme="dark"] .main-content {
-        background-color: #2c3034;
+      .main-content {
         min-height: calc(100vh - 200px);
         padding: 2rem 0;
+        background: var(--bs-body-bg);
       }
-      [data-bs-theme="light"] nav {
-        background-color: #f8f9fa !important;
-        border-bottom: 1px solid #dee2e6;
+      [data-bs-theme="light"] {
+        --bs-body-bg: #eef1f4;
+        --bs-body-color: #4a5568;
+        --bs-tertiary-bg: #f8fafc;
+        --bs-border-color: #e2e8f0;
+        --bs-primary: #3b82f6;
+        --bs-primary-rgb: 59, 130, 246;
+        --bs-link-color: #3b82f6;
+        --bs-link-hover-color: #2563eb;
+        --bs-navbar-bg: #f8fafc;
+        --bs-heading-color: #374151;
       }
-      [data-bs-theme="light"] .title-section {
-        background-color: #ffffff;
-        border-bottom: 1px solid #dee2e6;
-        padding: 2rem 0;
-        margin-bottom: 2rem;
+      .dropdown-toggle:hover span {
+        text-decoration: underline !important;
       }
-      [data-bs-theme="light"] .main-content {
-        background-color: #f8f9fa;
-        min-height: calc(100vh - 200px);
-        padding: 2rem 0;
+      [data-bs-theme="dark"] {
+        --bs-body-bg: #1a1d20;
+        --bs-body-color: #e2e8f0;
+        --bs-tertiary-bg: #212529;
+        --bs-border-color: #2d3748;
+        --bs-primary: #3b82f6;
+        --bs-primary-rgb: 59, 130, 246;
+        --bs-link-color: #3b82f6;
+        --bs-link-hover-color: #2563eb;
       }
     </style>
   </head>
 
   <body>
     <%= render "layouts/navbar" %>
-    <div class="title-section">
-      <% if current_user %>
-        <div class="container">
-          <div class="row">
-            <div class="col-12">
-              <div class="text-center">
-                <h1>Depósito Inteligente</h1>
-                <p class="lead">Bem Vindo, <%= current_user.email %></p>
-              </div>
-            </div>
+    <% unless current_user %>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h1 style="color: var(--bs-heading-color)">Depósito Inteligente</h1>
+          <div class="mt-3">
+            <%= link_to "Login", new_user_session_path, class: "btn btn-primary me-2" %>
+            <%= link_to "Sign up", new_user_registration_path, class: "btn btn-outline-primary" %>
           </div>
         </div>
-      <% else %>
-        <div class="container">
-          <div class="row">
-            <div class="col-12 text-center">
-              <h1>Depósito Inteligente</h1>
-              <div class="mt-3">
-                <%= link_to "Login", new_user_session_path, class: "btn btn-primary me-2" %>
-                <%= link_to "Sign up", new_user_registration_path, class: "btn btn-outline-primary" %>
-              </div>
-            </div>
-          </div>
-        </div>
-      <% end %>
+      </div>
     </div>
+  <% end %>
     <div class="main-content">
       <div class="container">
         <%= yield %>
