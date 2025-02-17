@@ -7,9 +7,11 @@ class GroceryListItemsController < ApplicationController
     grocery_list_item.quantity += 1
     grocery_list_item.save
 
+    @item = item
+    
     respond_to do |format|
-      format.html { redirect_to grocery_list_path }
       format.turbo_stream
+      format.html { redirect_to grocery_list_path }
     end
   end
 

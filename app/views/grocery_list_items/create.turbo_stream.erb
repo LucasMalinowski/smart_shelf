@@ -1,3 +1,24 @@
-<%= turbo_stream.append 'grocery_list_items' do %>
-  <%= render partial: 'grocery_list_item', locals: { item: current_user.grocery_list_items.find_by(item: Item.find(params[:item_id])) } %>
+<%= turbo_stream.append "flash-messages" do %>
+  <div class="toast show mb-3" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <i class="fas fa-check-circle text-success me-2"></i>
+      <strong class="me-auto">Sucesso</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      <%= @item.name %> adicionado à lista de compras!
+    </div>
+  </div>
 <% end %>
+
+<script>
+  const toasts = document.querySelectorAll('.toast');
+  toasts.forEach(toast => {
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        toast.remove();
+      }, 300);
+    }, 3000);
+  });
+</script>
