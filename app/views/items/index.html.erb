@@ -8,12 +8,15 @@
 
     <!-- Sidebar -->
     <div class="collapse collapse-horizontal show border-end border-secondary bg-dark" id="sidebarFilter" style="width: 250px;">
-      <div class="p-4">
-        <div class="d-flex align-items-center gap-2 mb-4">
+      <div class="p-3">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <div class="d-flex align-items-center gap-2">
+            <i class="fas fa-filter text-light"></i>
+            <h5 class="mb-0 text-light">Filtrar por Categoria</h5>
+          </div>
           <button class="btn btn-link text-light p-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarFilter">
-            <i class="fas fa-filter"></i>
+            <i class="fas fa-angle-double-left"></i>
           </button>
-          <h5 class="mb-0 text-light">Filtrar por Categoria</h5>
         </div>
         <div class="list-group bg-dark custom-radio-group" style="max-height: calc(100vh - 150px); overflow-y: auto;">
           <div class="custom-radio mb-2">
@@ -52,15 +55,17 @@
             --active-color: #0d6efd;
             scrollbar-width: thin;
             scrollbar-color: #666 #333;
+            padding-right: 8px;
           }
           
           .custom-radio-group::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
           }
           
           .custom-radio-group::-webkit-scrollbar-track {
             background: #333;
             border-radius: 4px;
+            margin: 4px;
           }
           
           .custom-radio-group::-webkit-scrollbar-thumb {
@@ -70,6 +75,10 @@
           
           .custom-radio-group::-webkit-scrollbar-thumb:hover {
             background: #888;
+          }
+
+          .custom-radio {
+            margin-bottom: 0.75rem !important;
           }
           
           .custom-radio-label {
