@@ -4,8 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :user_items
-  has_many :grocery_list_items
+  has_many :user_items, dependent: :destroy
+  has_many :grocery_list_items, dependent: :destroy
 
   after_create :create_user_items
 

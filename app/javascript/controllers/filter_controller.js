@@ -1,9 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["checkbox", "categorySection", "toggleButton"]
+  static targets = ["radio", "categorySection", "toggleButton"]
 
   connect() {
+    // Show all categories initially
     this.filterItems()
     this.updateToggleButton()
   }
@@ -19,13 +20,12 @@ export default class extends Controller {
   }
 
   filterItems() {
-    const selectedCategories = this.checkboxTargets
-      .filter(checkbox => checkbox.checked)
-      .map(checkbox => checkbox.value)
+    const selectedRadio = this.radioTargets.find(radio => radio.checked)
+    const selectedCategory = selectedRadio ? selectedRadio.value : 'all'
 
     this.categorySectionTargets.forEach(section => {
       const categoryId = section.dataset.categoryId
-      if (selectedCategories.length === 0 || selectedCategories.includes(categoryId)) {
+      if (selectedCategory === 'all' || selectedCategory === categoryId) {
         section.style.display = ''
       } else {
         section.style.display = 'none'
