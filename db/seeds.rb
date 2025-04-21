@@ -709,4 +709,9 @@ categories.each do |category_name, category_data|
   end
 end
 
+User.create!(
+  email: "test@admin.com",
+  password: "password",
+)
+
 puts "Seeding complete!"
