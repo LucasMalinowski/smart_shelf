@@ -1,213 +1,99 @@
-<div class="container-fluid py-4 bg-dark" data-controller="filter">
-  <div class="d-flex position-relative">
-    <!-- Sidebar Toggle Button (visible when collapsed) -->
-    <button class="btn btn-link text-light position-absolute top-0 start-0 z-3" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarFilter" 
-            style="display: none;" data-filter-target="toggleButton">
-      <i class="fas fa-filter"></i>
-    </button>
-
-    <!-- Sidebar -->
-    <div class="collapse collapse-horizontal show border-end border-secondary bg-dark" id="sidebarFilter" style="width: 250px;">
-      <div class="p-3">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-          <div class="d-flex align-items-center gap-2">
-            <i class="fas fa-filter text-light"></i>
-            <h5 class="mb-0 text-light">Filtrar por Categoria</h5>
-          </div>
-          <button class="btn btn-link text-light p-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarFilter">
-            <i class="fas fa-angle-double-left"></i>
-          </button>
-        </div>
-        <div class="list-group bg-dark custom-radio-group" style="max-height: calc(100vh - 150px); overflow-y: auto;">
-          <div class="custom-radio mb-2">
-            <input type="radio" 
-                   class="btn-check" 
-                   id="category-all" 
-                   name="category-filter"
-                   value="all"
-                   data-filter-target="radio"
-                   data-action="change->filter#filterItems"
-                   checked>
-            <label class="custom-radio-label d-flex align-items-center gap-2 w-100 px-3 py-2" for="category-all">
-              <i class="fas fa-layer-group"></i>
-              <span>Todas as Categorias</span>
-            </label>
-          </div>
-          <% @categories.each do |category| %>
-            <div class="custom-radio mb-2">
-              <input type="radio" 
-                     class="btn-check" 
-                     id="category-<%= category.id %>" 
-                     name="category-filter"
-                     value="<%= category.id %>"
-                     data-filter-target="radio"
-                     data-action="change->filter#filterItems">
-              <label class="custom-radio-label d-flex align-items-center gap-2 w-100 px-3 py-2" for="category-<%= category.id %>">
-                <i class="fas fa-<%= category.icon_name %>"></i>
-                <span><%= category.name %></span>
-              </label>
-            </div>
-          <% end %>
-        </div>
-
-        <style>
-          .custom-radio-group {
-            --active-color: #0d6efd;
-            scrollbar-width: thin;
-            scrollbar-color: #666 #333;
-            padding-right: 8px;
-          }
-          
-          .custom-radio-group::-webkit-scrollbar {
-            width: 6px;
-          }
-          
-          .custom-radio-group::-webkit-scrollbar-track {
-            background: #333;
-            border-radius: 4px;
-            margin: 4px;
-          }
-          
-          .custom-radio-group::-webkit-scrollbar-thumb {
-            background: #666;
-            border-radius: 4px;
-          }
-          
-          .custom-radio-group::-webkit-scrollbar-thumb:hover {
-            background: #888;
-          }
-
-          .custom-radio {
-            margin-bottom: 0.75rem !important;
-          }
-          
-          .custom-radio-label {
-            border-radius: 6px;
-            color: #fff;
-            opacity: 0.7;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            padding-left: 1rem !important;
-          }
-
-          .custom-radio-label:hover {
-            opacity: 0.9;
-            background: rgba(255, 255, 255, 0.1);
-          }
-
-          .btn-check:checked + .custom-radio-label {
-            opacity: 1;
-            background: rgba(13, 110, 253, 0.2);
-            border-left: 3px solid var(--active-color);
-          }
-        </style>
+<div class="space-y-10" data-controller="filter" data-filter-selected-value="<%= @selected_category %>">
+  <header class="flex flex-col gap-6 rounded-3xl bg-white/60 p-6 shadow-soft backdrop-blur dark:bg-surface-800/70 lg:flex-row lg:items-center lg:justify-between">
+    <div class="flex flex-col gap-2">
+      <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.4em] text-ink-400 dark:text-slate-400">
+        Painel da despensa
+      </div>
+      <h1 class="text-3xl font-semibold text-ink-900 dark:text-white">Meus itens</h1>
+      <p class="text-sm text-ink-500 dark:text-slate-300">Controle de estoque para toda a família, com alertas, compras sugeridas e experiências conectadas.</p>
+      <div class="flex items-center gap-2 text-xs text-ink-400 dark:text-slate-500">
+        <span>Exibindo</span>
+        <%= render "items/loaded_counter", count: @loaded_count %>
+        <span>itens</span>
       </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="flex-grow-1 px-4">
-      <!-- Header Section -->
-      <div class="container mb-4">
-    <div class="d-flex justify-content-between align-items-center">
-      <h1 class="h3 mb-0">Meus Items</h1>
-      <%= link_to grocery_list_path, class: "btn btn-primary d-flex align-items-center gap-2" do %>
-        <i class="fas fa-shopping-basket"></i>
-        Lista de Compras
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <button class="inline-flex items-center justify-center gap-2 rounded-full border border-ink-200/60 px-5 py-2 text-sm font-semibold text-ink-600 transition hover:border-primary-300 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:border-white/10 dark:text-slate-200 dark:hover:border-primary-400 dark:hover:text-primary-200 lg:hidden" data-action="click->filter#toggleSidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+          <path d="M3 4h18" />
+          <path d="M8 9h8" />
+          <path d="M10 14h4" />
+          <path d="M12 19h0" />
+        </svg>
+        Filtros
+      </button>
+
+      <% current_direction = params[:sort_direction] == 'desc' ? 'desc' : 'asc' %>
+      <% next_direction = current_direction == 'asc' ? 'desc' : 'asc' %>
+      <%= link_to request.query_parameters.merge(sort_by: 'quantity', sort_direction: next_direction), class: "inline-flex items-center justify-center gap-2 rounded-full border border-ink-200/60 px-5 py-2 text-sm font-semibold text-ink-600 transition hover:border-primary-300 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:border-white/10 dark:text-slate-200 dark:hover:border-primary-400 dark:hover:text-primary-200" do %>
+        Ordenar por quantidade
+        <span class="text-xs"><%= current_direction == 'asc' ? '↑' : '↓' %></span>
+      <% end %>
+
+      <%= link_to grocery_list_path, class: "inline-flex items-center justify-center gap-2 rounded-full bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-surface-900" do %>
+        <span>Lista de compras</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+          <path d="M7 4h-2l-1 7h16l-1-7h-2" />
+          <path d="M10 11v6" />
+          <path d="M14 11v6" />
+          <path d="M5 21h14" />
+        </svg>
       <% end %>
     </div>
-  </div>
+  </header>
 
-
-      <!-- Items Grid -->
-      <div class="container">
-    <% @categories.each do |category| %>
-      <div class="mb-4" 
-           data-filter-target="categorySection"
-           data-category-id="<%= category.id %>"
-           id="category-section-<%= category.id %>">
-        <div class="d-flex justify-content-between align-items-center p-3 bg-secondary bg-opacity-25 rounded mb-3">
-          <h4 class="mb-0 text-light"><%= category.name %></h4>
+  <div class="flex flex-col gap-6 lg:flex-row">
+    <aside class="hidden w-full max-w-xs flex-shrink-0 flex-col space-y-4 rounded-3xl border border-white/20 bg-white/70 p-4 shadow-soft dark:border-white/10 dark:bg-surface-800/80 lg:flex">
+      <div class="flex items-center justify-between">
+        <div class="flex flex-col gap-1">
+          <span class="text-xs font-semibold uppercase tracking-[0.3em] text-ink-400 dark:text-slate-400">Categorias</span>
+          <p class="text-sm text-ink-600 dark:text-slate-200">Filtre por setor ou visualize tudo</p>
         </div>
-        
-        <div>
-          <div class="row g-4">
-            <% @user_items.select { |ui| ui.item.category_id == category.id }.each do |user_item| %>
-              <% item = user_item.item %>
-              <div class="col-12 col-md-4 col-sm-6 col-lg-4 col-xl-3 mb-4">
-                <div class="card h-100 shadow-sm bg-dark border-secondary">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                      <div>
-                        <h5 class="card-title mb-1 text-light"><%= item.name %></h5>
-<!--                        <span><%#= image_tag(item.image, class: "img-fluid", style:"width: 80px; height: 60px") if item.image.attached? %></span>-->
-                        <span class="badge bg-secondary text-light">
-                          <i class="fas fa-tag me-1"></i>
-                          <%= item.category.name %>
-                        </span>
-                      </div>
-                      <%= button_to grocery_list_items_path(item_id: user_item.item.id),
-                          method: :post,
-                          class: 'btn btn-primary btn-sm',
-                          data: { turbo_action: 'replace' } do %>
-                        <i class="fa-solid fa-cart-plus"></i>
-                      <% end %>
-                    </div>
+      </div>
+      <div class="h-[70vh] space-y-2 overflow-y-auto pr-2">
+        <%= render "items/filter_option", label: "Todas as categorias", value: "all", icon: "🧺", active: @selected_category == 'all' %>
+        <% @categories.each do |category| %>
+          <%= render "items/filter_option", label: category.name, value: category.id, icon: category_icon(category), active: @selected_category == category.id.to_s %>
+        <% end %>
+      </div>
+    </aside>
 
-                    <div class="d-flex align-items-center justify-content-between mt-3">
-                      <div class="d-flex gap-2">
-                        <%= button_to '-',
-                            user_item_path(user_item),
-                            method: :put,
-                            params: { quantity: -1 },
-                            class: 'btn btn-danger',
-                            data: { turbo_action: 'replace' } %>
-                        <span class="btn disabled px-4">
-                          <span id="quantity-<%= user_item.id %>"><%= user_item.quantity %></span>
-                        </span>
-                        <%= button_to '+',
-                            user_items_path(user_item_id: user_item, item_id: item, quantity: 1),
-                            method: :post,
-                            class: 'btn btn-success',
-                            data: { turbo_action: 'replace' } %>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            <% end %>
+    <section class="flex-1 space-y-10">
+      <div id="inventory_items" class="space-y-10">
+        <% if @inventory_items_by_category.present? %>
+          <% @inventory_items_by_category.each do |category, items| %>
+            <%= render "items/category_section", category: category, items: items %>
+          <% end %>
+        <% else %>
+          <div class="flex flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-ink-200/60 bg-white/60 p-10 text-center text-sm text-ink-400 dark:border-white/10 dark:bg-surface-800/60 dark:text-slate-400">
+            <span class="text-3xl">🗂️</span>
+            <p>Nenhum item encontrado para este filtro.</p>
           </div>
-        </div>
+        <% end %>
       </div>
-    <% end %>
+
+      <%= render "items/pagination", next_page: @next_page, request_params: request.query_parameters %>
+    </section>
   </div>
-      </div>
+
+  <div class="fixed inset-0 z-20 hidden bg-surface-900/60 backdrop-blur lg:hidden" data-action="click->filter#closeSidebar" data-filter-target="backdrop"></div>
+
+  <aside class="fixed inset-y-0 left-0 z-30 hidden w-80 max-w-full space-y-4 overflow-y-auto border-r border-white/10 bg-surface-900/95 p-4 shadow-soft lg:hidden" data-filter-target="sidebar">
+    <div class="flex items-center justify-between">
+      <h2 class="text-sm font-semibold text-white">Filtrar categorias</h2>
+      <button class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/20 text-white" data-action="click->filter#closeSidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+          <path d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
-  </div>
+
+    <div class="mt-4 space-y-2">
+      <%= render "items/filter_option", label: "Todas as categorias", value: "all", icon: "🧺", active: @selected_category == 'all', mobile: true %>
+      <% @categories.each do |category| %>
+        <%= render "items/filter_option", label: category.name, value: category.id, icon: category_icon(category), active: @selected_category == category.id.to_s, mobile: true %>
+      <% end %>
+    </div>
+  </aside>
 </div>
-
-<script>
-
-  document.getElementById('sort_by').addEventListener('click', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const currentDirection = urlParams.get('sort_direction') || 'asc';
-    const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
-
-    urlParams.set('sort_by', 'quantity');
-    urlParams.set('sort_direction', newDirection);
-    window.location.search = urlParams.toString();
-  });
-
-  document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const direction = urlParams.get('sort_direction') || 'asc';
-    const icon = document.getElementById('sort_icon');
-
-    if (direction === 'asc') {
-      icon.classList.remove('fa-sort-down');
-      icon.classList.add('fa-sort-up');
-    } else {
-      icon.classList.remove('fa-sort-up');
-      icon.classList.add('fa-sort-down');
-    }
-  });
-</script>

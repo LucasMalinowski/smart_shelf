@@ -1,3 +1,20 @@
+# Configuração de unidades de medida
+measurement_units = {
+  "Unidade" => { short_name: "un", unit_type: "unit", step: 1, fractional: false },
+  "Quilograma" => { short_name: "kg", unit_type: "weight", step: 0.1, fractional: true },
+  "Grama" => { short_name: "g", unit_type: "weight", step: 10, fractional: true },
+  "Litro" => { short_name: "L", unit_type: "volume", step: 0.1, fractional: true },
+  "Mililitro" => { short_name: "ml", unit_type: "volume", step: 50, fractional: true },
+  "Xícara" => { short_name: "cup", unit_type: "volume", step: 0.25, fractional: true },
+  "Colher de sopa" => { short_name: "tbsp", unit_type: "volume", step: 0.5, fractional: true }
+}
+
+measurement_units.each do |name, attrs|
+  MeasurementUnit.find_or_create_by!(name: name) do |unit|
+    unit.assign_attributes(attrs)
+  end
+end
+
 # Categorias
 categories = {
   "Frutas" => {
@@ -707,6 +724,25 @@ categories.each do |category_name, category_data|
   category_data[:items].each do |item_attributes|
     category.items.find_or_create_by!(name: item_attributes[:name])
   end
+end
+
+unit_assignment_rules = [
+  { pattern: /(Frutas|Vegetais|Padaria|Doces|Snacks|Frios|Produtos para Pets|Higiene|Limpeza)/i, unit: "Unidade" },
+  { pattern: /(Carnes|Peixes|Grãos|Cereais|Massas|Proteínas|Congelados|Mercearia|Padaria Salgada|Açougue)/i, unit: "Quilograma" },
+  { pattern: /(Bebidas|Laticínios|Molhos|Sopas|Produtos Veganos|Produtos Zero|Produtos Naturais)/i, unit: "Litro" }
+]
+
+Category.find_each do |category|
+  matched_rule = unit_assignment_rules.find { |rule| category.name.match?(rule[:pattern]) }
+  unit_name = matched_rule ? matched_rule[:unit] : "Unidade"
+  unit = MeasurementUnit.find_by(name: unit_name)
+  next unless unit
+
+  association = category.category_measurement_unit || category.build_category_measurement_unit
+  association.measurement_unit = unit
+  association.save!
+
+  category.items.update_all(default_measurement_unit_id: unit.id)
 end
 
 User.create!(

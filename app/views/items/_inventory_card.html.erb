@@ -1,0 +1,158 @@
+<% status = inventory_status(inventory_item) %>
+<turbo-frame id="inventory_item_<%= inventory_item.id %>" class="w-full basis-full sm:basis-[calc((100%_-_1.5rem)/2)] sm:max-w-[calc((100%_-_1.5rem)/2)] lg:basis-[calc((100%_-_3rem)/3)] lg:max-w-[calc((100%_-_3rem)/3)]">
+  <article
+    class="group flex h-full flex-col gap-4 rounded-3xl border border-white/15 bg-white/80 p-5 shadow-soft ring-1 ring-transparent transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-surface-800/80 <%= inventory_status_ring(status) %>"
+    data-controller="inventory-card"
+    data-filter-item
+    data-status="<%= status %>"
+    data-inventory-card-step-value="<%= unit_step_value(inventory_item) %>"
+    data-inventory-card-precision-value="<%= inventory_item.unit_precision || 0 %>"
+  >
+    <header class="flex min-h-[4.75rem] items-start justify-between gap-3">
+      <div class="flex flex-col gap-2">
+        <div class="flex items-start gap-2">
+          <span class="text-2xl"><%= category_icon(inventory_item.item.category) %></span>
+          <h3 class="max-w-[14rem] min-h-[2.6rem] max-h-[2.6rem] overflow-hidden text-lg font-semibold leading-tight text-ink-900 line-clamp-2 dark:text-white" title="<%= inventory_item.item.name %>"><%= truncate(inventory_item.item.name, length: 38) %></h3>
+        </div>
+        <span class="inline-flex items-center gap-2 text-xs font-semibold text-ink-400">
+          <span class="inline-flex items-center gap-1 rounded-full bg-surface-100 px-2 py-1 text-xs uppercase tracking-wide text-ink-500 dark:bg-white/10 dark:text-slate-300">
+            <%= inventory_item.item.category.name %>
+          </span>
+          <% if (suggestion = inventory_item.suggestion_label).present? %>
+            <span class="inline-flex items-center gap-1 rounded-full bg-warning/10 px-2 py-1 text-[0.6rem] font-semibold uppercase tracking-wide text-warning dark:bg-warning/20 dark:text-warning">
+              <%= suggestion %>
+            </span>
+          <% end %>
+        </span>
+      </div>
+      <div class="flex flex-col items-end gap-2">
+        <%= button_to grocery_list_items_path(item_id: inventory_item.item.id, quantity: unit_step_value(inventory_item)),
+              method: :post,
+              class: "inline-flex items-center gap-2 rounded-full border border-primary-300/60 bg-white/70 px-3 py-1 text-xs font-semibold text-primary-600 shadow-soft transition hover:-translate-y-0.5 hover:border-primary-400 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:bg-white/5 dark:text-primary-200",
+              data: { turbo_action: 'replace' } do %>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+            <path d="M5 6h2l1 7h8l1-7h2" />
+            <path d="M7 6V4h3" />
+            <path d="M16 6V4h-3" />
+            <circle cx="9" cy="20" r="1" />
+            <circle cx="15" cy="20" r="1" />
+          </svg>
+          Adicionar à lista
+        <% end %>
+        <span class="whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold <%= inventory_status_badge(status) %>">
+          <%= inventory_status_label(status) %>
+        </span>
+      </div>
+    </header>
+
+    <section class="flex flex-1 flex-col gap-5 rounded-2xl bg-white/60 p-4 text-sm leading-tight text-ink-500 dark:bg-white/5 dark:text-slate-300">
+      <div class="flex min-h-[6.5rem] w-full flex-col items-center gap-3">
+        <span class="text-3xl font-semibold text-ink-900 dark:text-white" id="inventory-quantity-<%= inventory_item.id %>">
+          <%= format_quantity(inventory_item) %>
+        </span>
+        <div class="flex w-full max-w-xs flex-col gap-2">
+          <div class="flex items-center gap-3 rounded-full border border-ink-200/60 bg-white/70 px-3 py-2 text-xs text-ink-500 shadow-soft dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+            <span class="uppercase tracking-wide text-ink-400 dark:text-slate-400">Qtd.</span>
+            <input type="number"
+                   min="<%= unit_step_value(inventory_item) %>"
+                   step="<%= precision_step_value(inventory_item) %>"
+                   value="<%= unit_step_value(inventory_item) %>"
+                   inputmode="decimal"
+                   class="w-24 border-none bg-transparent text-center text-sm font-semibold text-ink-700 focus:outline-none dark:text-slate-100"
+                   data-inventory-card-target="amountInput"
+                   data-action="input->inventory-card#sanitize blur->inventory-card#sanitize">
+            <span class="text-xs font-semibold text-ink-500 dark:text-slate-200"><%= inventory_item.unit_label %></span>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <%= form_with url: inventory_item_path(inventory_item), method: :put, scope: nil, data: { turbo_action: 'replace' }, class: "inline-flex" do |form| %>
+              <%= form.hidden_field :quantity, value: "", data: { inventory_card_target: "decrementInput" } %>
+              <button type="submit" data-action="inventory-card#submitDecrement" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-danger/30 bg-white/80 text-base font-semibold text-danger transition hover:-translate-y-0.5 hover:border-danger/60 hover:text-danger focus:outline-none focus:ring-2 focus:ring-danger/40 dark:bg-white/10">
+                -
+              </button>
+            <% end %>
+            <%= form_with url: inventory_items_path, method: :post, scope: nil, data: { turbo_action: 'replace' }, class: "inline-flex" do |form| %>
+              <%= form.hidden_field :item_id, value: inventory_item.item.id %>
+              <%= form.hidden_field :quantity, value: "", data: { inventory_card_target: "incrementInput" } %>
+              <button type="submit" data-action="inventory-card#submitIncrement" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-300 bg-primary-500 text-base font-semibold text-white transition hover:-translate-y-0.5 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-300">
+                +
+              </button>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex min-h-[3.2rem] flex-wrap items-center gap-3 text-xs text-ink-400">
+        <span class="inline-flex items-center gap-2 rounded-full bg-surface-100 px-3 py-1 text-xs font-medium text-ink-500 dark:bg-white/5 dark:text-slate-300">
+          Última atualização: <%= l(inventory_item.updated_at, format: :short) %>
+        </span>
+        <% if inventory_item.minimum_quantity.present? %>
+          <span class="inline-flex items-center gap-2 rounded-full bg-candy-mint/60 px-3 py-1 text-xs font-medium text-ink-600 dark:bg-candy-mint/30 dark:text-slate-100">
+            Limiar: <%= format_measurement(inventory_item.minimum_quantity, inventory_item) %>
+          </span>
+        <% end %>
+        <% if inventory_item.critical_quantity.present? %>
+          <span class="inline-flex items-center gap-2 rounded-full bg-candy-sky/60 px-3 py-1 text-xs font-medium text-ink-600 dark:bg-candy-sky/30 dark:text-slate-100">
+            Crítico: <%= format_measurement(inventory_item.critical_quantity, inventory_item) %>
+          </span>
+        <% end %>
+        <% if inventory_item.expires_at.present? %>
+          <span class="inline-flex items-center gap-2 rounded-full bg-candy-lemon/70 px-3 py-1 text-xs font-medium text-ink-600 dark:bg-candy-lemon/30 dark:text-slate-900">
+            Vencimento: <%= l(inventory_item.expires_at, format: :short) %>
+          </span>
+        <% end %>
+      </div>
+    </section>
+
+    <div class="flex items-center justify-between text-xs text-ink-400">
+      <button class="inline-flex items-center gap-1 text-primary-600 transition hover:text-primary-700 dark:text-primary-200 dark:hover:text-primary-100" data-action="inventory-card#togglePanel">
+        Ajustar metas
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3">
+          <path d="M8 17l4 4 4-4" />
+          <path d="M12 3v18" />
+        </svg>
+      </button>
+      <button class="inline-flex items-center gap-1 text-ink-400 transition hover:text-ink-600 dark:hover:text-white">
+        Ver histórico
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3">
+          <path d="M12 8v4l3 3" />
+          <path d="M12 21a9 9 0 110-18 9 9 0 010 18z" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="mt-4 hidden rounded-3xl border border-white/15 bg-white/80 p-4 text-sm text-ink-500 shadow-soft dark:border-white/10 dark:bg-surface-800/80 dark:text-slate-200" data-inventory-card-target="panel">
+      <%= form_with model: inventory_item, url: inventory_item_path(inventory_item), method: :patch, data: { turbo_action: 'replace' }, class: "flex flex-col gap-4" do |form| %>
+        <div class="flex flex-col gap-4">
+          <div class="flex min-h-[5.5rem] max-h-[5.5rem] flex-1 flex-col justify-between gap-1 overflow-hidden">
+            <%= form.label :minimum_quantity, "Estoque mínimo", class: "line-clamp-2 text-xs font-semibold uppercase tracking-wide text-ink-400 dark:text-slate-400" %>
+            <%= form.number_field :minimum_quantity,
+                  value: inventory_item.minimum_quantity,
+                  min: 0,
+                  step: unit_step_value(inventory_item),
+                  class: "rounded-2xl border border-ink-200/70 bg-white px-3 py-2 text-sm text-ink-700 shadow-soft transition focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-100" %>
+          </div>
+          <div class="flex min-h-[5.5rem] max-h-[5.5rem] flex-1 flex-col justify-between gap-1 overflow-hidden">
+            <%= form.label :critical_quantity, "Nível crítico", class: "line-clamp-2 text-xs font-semibold uppercase tracking-wide text-ink-400 dark:text-slate-400" %>
+            <%= form.number_field :critical_quantity,
+                  value: inventory_item.critical_quantity,
+                  min: 0,
+                  step: unit_step_value(inventory_item),
+                  class: "rounded-2xl border border-ink-200/70 bg-white px-3 py-2 text-sm text-ink-700 shadow-soft transition focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-100" %>
+          </div>
+          <div class="flex min-h-[5.5rem] max-h-[5.5rem] flex-1 flex-col justify-between gap-1 overflow-hidden">
+            <%= form.label :expires_at, "Validade", class: "line-clamp-2 text-xs font-semibold uppercase tracking-wide text-ink-400 dark:text-slate-400" %>
+            <%= form.date_field :expires_at,
+                  value: inventory_item.expires_at&.to_date,
+                  class: "w-full rounded-2xl border border-ink-200/70 bg-white px-3 py-2 text-sm text-ink-700 shadow-soft transition focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-100" %>
+          </div>
+        </div>
+        <div class="flex items-center justify-between text-xs text-ink-400 dark:text-slate-400">
+          <button type="button" class="inline-flex items-center gap-1 rounded-full border border-ink-200/60 px-4 py-2 font-semibold text-ink-600 transition hover:border-primary-300 hover:text-primary-600 dark:border-white/10 dark:text-slate-200 dark:hover:border-primary-400 dark:hover:text-primary-200" data-action="inventory-card#togglePanel">
+            Cancelar
+          </button>
+          <%= form.submit "Salvar metas", class: "inline-flex items-center gap-2 rounded-full bg-primary-600 px-5 py-2 text-xs font-semibold text-white shadow-soft transition hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-300" %>
+        </div>
+      <% end %>
+    </div>
+  </article>
+</turbo-frame>

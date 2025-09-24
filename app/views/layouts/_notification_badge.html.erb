@@ -1,0 +1,5 @@
+<% if unread_count.to_i.positive? %>
+  <span id="notification_badge" class="absolute -right-1 -top-1 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-warning px-1 text-[0.6rem] font-semibold text-surface-900 shadow-soft"><%= unread_count %></span>
+<% else %>
+  <span id="notification_badge" class="hidden"></span>
+<% end %>

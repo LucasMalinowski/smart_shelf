@@ -1,24 +1,11 @@
-<%= turbo_stream.append "flash-messages" do %>
-  <div class="toast show mb-3" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <i class="fas fa-check-circle text-success me-2"></i>
-      <strong class="me-auto">Sucesso</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-      <%= @item.name %> adicionado à lista de compras!
-    </div>
-  </div>
+<%= turbo_stream.replace "grocery_list_entries" do %>
+  <%= render partial: "grocery_list/entries", locals: { grocery_list_items: @grocery_list_items, inventory_lookup: @inventory_lookup } %>
 <% end %>
 
-<script>
-  const toasts = document.querySelectorAll('.toast');
-  toasts.forEach(toast => {
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => {
-        toast.remove();
-      }, 300);
-    }, 3000);
-  });
-</script>
+<%= turbo_stream.replace "grocery_list_suggestions" do %>
+  <%= render partial: "grocery_list/suggestions", locals: { suggested_inventory_items: @suggested_inventory_items } %>
+<% end %>
+
+<%= turbo_stream.update "flash-messages" do %>
+  <%= render "shared/flash" %>
+<% end %>

@@ -1,41 +1,126 @@
-<nav class="navbar navbar-expand-lg bg-body-subtle border-bottom">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="<%= root_path %>">
-      <%= image_tag("logo.png", class: "img-fluid", style:"width: 80px; height: 60px") %>
-    </a>
+<% unread_notifications = current_user ? current_user.family_notifications.recent.limit(5) : [] %>
+<% unread_count = current_user ? current_user.family_notifications.unread.count : 0 %>
 
-    <div class="d-flex align-items-center gap-4">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-row gap-4">
-        <li class="nav-item">
-          <%= link_to "Meus Items", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Lista de Compras", grocery_list_path, class: "nav-link #{'active' if current_page?(grocery_list_path)}" %>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Conexão Alexa</a>
-        </li>
-      </ul>
+<nav class="relative sticky top-0 z-30 border-b border-white/5 bg-white/70 backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-surface-900/80" data-controller="menu">
+  <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-3">
+      <%= link_to root_path, class: "inline-flex items-center gap-3 rounded-full px-3 py-1.5 text-sm font-semibold text-ink-900 transition hover:bg-surface-100 dark:text-slate-100 dark:hover:bg-white/5" do %>
+        <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-500/20 text-primary-600 shadow-soft dark:bg-primary-500/25 dark:text-primary-300">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+            <path d="M4.5 9.75a7.5 7.5 0 0115 0 6 6 0 01-6 6h-1.5a.75.75 0 000 1.5H16.5a.75.75 0 010 1.5H7.5a.75.75 0 010-1.5h2.25a2.25 2.25 0 000-4.5h-.75a4.5 4.5 0 01-4.5-4.5z" />
+          </svg>
+        </span>
+        <span class="hidden text-left sm:flex sm:flex-col">
+          <span class="text-xs uppercase tracking-widest text-ink-500 dark:text-slate-400">Smart Shelf</span>
+          <span class="text-sm font-semibold">Painel da casa</span>
+        </span>
+      <% end %>
+    </div>
 
-      <div class="d-flex align-items-center gap-4">
-        <a class="nav-link position-relative" href="#" id="notificationButton">
-          <i class="fas fa-bell"></i>
-        </a>
-        <div class="dropdown">
-          <a class="dropdown-toggle d-flex align-items-center hidden-arrow gap-2 text-decoration-none" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="text-body text-decoration-none" style="cursor: pointer; transition: color 0.2s"><%= current_user&.email %></span>
-            <img src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" class="rounded-circle" height="25" alt="Avatar" loading="lazy"/>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
-            <li><a class="dropdown-item" href="#">Meu Perfil</a></li>
-            <li><a class="dropdown-item" href="#">Configurações</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-              <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "dropdown-item" %>
-            </li>
-          </ul>
+    <div class="flex items-center gap-2 md:hidden">
+      <button data-action="click->menu#toggle" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 text-ink-700 transition hover:border-primary-300 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:text-slate-200">
+        <svg data-menu-target="iconOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.25h16.5m-16.5 6H12m-8.25 6h16.5" />
+        </svg>
+        <svg data-menu-target="iconClose" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="hidden h-5 w-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="hidden items-center gap-6 md:flex" data-menu-target="links">
+      <%= link_to "Despensa", root_path, class: "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition #{current_page?(root_path) ? 'bg-primary-500/15 text-primary-600 shadow-soft dark:bg-primary-400/10 dark:text-primary-300' : 'text-ink-500 hover:bg-surface-100 hover:text-ink-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white'}" %>
+      <%= link_to "Lista de compras", grocery_list_path, class: "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition #{current_page?(grocery_list_path) ? 'bg-primary-500/15 text-primary-600 shadow-soft dark:bg-primary-400/10 dark:text-primary-300' : 'text-ink-500 hover:bg-surface-100 hover:text-ink-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white'}" %>
+      <a href="#" class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-ink-500 transition hover:bg-surface-100 hover:text-ink-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white">Conexão Alexa</a>
+    </div>
+
+    <div class="hidden items-center gap-4 md:flex">
+      <button class="relative inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/60 text-ink-700 shadow-soft transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary-200 dark:bg-white/10 dark:text-slate-200" id="notificationButton" data-action="click->menu#toggleNotifications">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9a6 6 0 10-12 0v.75a8.967 8.967 0 01-2.311 6.022c1.733.64 3.56 1.085 5.455 1.31m5.713 0a24.255 24.255 0 01-5.713 0m5.713 0a3 3 0 11-5.713 0" />
+        </svg>
+        <%= render "layouts/notification_badge", unread_count: unread_count %>
+      </button>
+
+      <button class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/20 text-ink-700 transition hover:border-primary-300 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:text-slate-200" id="darkModeToggle" data-action="click->theme#toggle">
+        <svg data-theme-target="iconSun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="hidden h-5 w-5">
+          <path d="M12 3a1 1 0 011 1v1.25a1 1 0 11-2 0V4a1 1 0 011-1zm7.071 2.929a1 1 0 010 1.414l-.884.884a1 1 0 01-1.414-1.414l.884-.884a1 1 0 011.414 0zM21 11a1 1 0 110 2h-1.25a1 1 0 110-2H21zM6.227 5.313a1 1 0 011.414 0l.884.884a1 1 0 11-1.414 1.414l-.884-.884a1 1 0 010-1.414zM4 11a1 1 0 000 2H2.75a1 1 0 000-2H4zm2.227 7.687a1 1 0 010-1.414l.884-.884a1 1 0 111.414 1.414l-.884.884a1 1 0 01-1.414 0zM12 18.75a1 1 0 011 1V21a1 1 0 11-2 0v-1.25a1 1 0 011-1zm8.071-1.508a1 1 0 10-1.414-1.414l-.884.884a1 1 0 101.414 1.414l.884-.884zM12 7.5A4.5 4.5 0 1016.5 12 4.505 4.505 0 0012 7.5z" />
+        </svg>
+        <svg data-theme-target="iconMoon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+          <path d="M21 12.79A9 9 0 0111.21 3 7 7 0 1019 12.79z" />
+        </svg>
+      </button>
+
+      <div class="relative" data-controller="dropdown">
+        <button class="inline-flex items-center gap-3 rounded-full bg-white/70 px-3 py-2 text-sm font-semibold text-ink-800 shadow-soft transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary-200 dark:bg-white/10 dark:text-slate-100" data-action="click->dropdown#toggle" data-dropdown-target="trigger">
+          <span class="hidden flex-col text-left leading-tight md:flex">
+            <span class="text-xs font-medium text-ink-500 dark:text-slate-400">Família</span>
+            <span><%= current_user&.family&.name %></span>
+          </span>
+          <span class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary-400/40 to-primary-600/40 text-primary-700 dark:from-primary-400/20 dark:to-primary-600/20 dark:text-primary-200">
+            <span class="text-xs font-semibold"><%= current_user&.family&.name&.first&.upcase || current_user&.email&.first&.upcase %></span>
+          </span>
+        </button>
+        <div class="absolute right-0 mt-3 hidden w-56 rounded-2xl border border-white/10 bg-white/90 p-3 text-sm shadow-soft backdrop-blur dark:bg-surface-800/95" data-dropdown-target="menu">
+          <div class="flex items-center gap-3 rounded-xl bg-surface-100/70 px-3 py-2 text-ink-600 dark:bg-white/5 dark:text-slate-200">
+            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-500/20 text-primary-600 dark:bg-primary-500/25 dark:text-primary-200">
+              <span class="text-xs font-semibold"><%= current_user&.family&.name&.first&.upcase || current_user&.email&.first&.upcase %></span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs uppercase tracking-wide text-ink-400 dark:text-slate-400">Logado</span>
+              <span class="truncate text-sm font-medium"><%= current_user&.family&.name %></span>
+            </div>
+          </div>
+          <div class="mt-3 flex flex-col gap-1">
+            <a href="#" class="inline-flex items-center justify-between rounded-xl px-3 py-2 text-ink-600 transition hover:bg-surface-100 hover:text-ink-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white">
+              <span>Meu perfil</span>
+              <span class="text-xs text-ink-400 dark:text-slate-500">Em breve</span>
+            </a>
+            <a href="#" class="inline-flex items-center justify-between rounded-xl px-3 py-2 text-ink-600 transition hover:bg-surface-100 hover:text-ink-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white">
+              <span>Configurações</span>
+              <span class="text-xs text-ink-400 dark:text-slate-500">Em breve</span>
+            </a>
+          </div>
+          <div class="mt-4 flex items-center justify-between rounded-xl border border-danger/30 bg-danger/10 px-3 py-2 text-danger dark:border-danger/30 dark:bg-danger/20 dark:text-danger-100">
+            <span>Sair</span>
+            <%= button_to destroy_user_session_path, method: :delete, class: "h-10 w-10 rounded-full bg-danger text-white shadow-soft transition hover:bg-danger/90 focus:outline-none focus:ring-2 focus:ring-danger/40" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto h-4 w-4">
+                <path d="M15 3h4a1 1 0 011 1v16a1 1 0 01-1 1h-4" />
+                <path d="M10 17l5-5-5-5" />
+                <path d="M15 12H3" />
+              </svg>
+            <% end %>
+          </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="hidden md:hidden" data-menu-target="drawer">
+    <div class="mx-4 mb-4 flex flex-col gap-3 rounded-3xl border border-white/20 bg-white/80 p-4 shadow-soft backdrop-blur-lg dark:border-white/10 dark:bg-surface-800/80">
+      <%= link_to "Despensa", root_path, class: "inline-flex items-center justify-between rounded-2xl px-4 py-3 text-base font-medium transition #{current_page?(root_path) ? 'bg-primary-500/15 text-primary-600 shadow-soft dark:bg-primary-500/25 dark:text-primary-200' : 'text-ink-500 hover:bg-surface-100 hover:text-ink-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white'}" %>
+      <%= link_to "Lista de compras", grocery_list_path, class: "inline-flex items-center justify-between rounded-2xl px-4 py-3 text-base font-medium transition #{current_page?(grocery_list_path) ? 'bg-primary-500/15 text-primary-600 shadow-soft dark:bg-primary-500/25 dark:text-primary-200' : 'text-ink-500 hover:bg-surface-100 hover:text-ink-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white'}" %>
+      <a href="#" class="inline-flex items-center justify-between rounded-2xl px-4 py-3 text-base font-medium text-ink-500 transition hover:bg-surface-100 hover:text-ink-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white">Conexão Alexa</a>
+      <div class="grid grid-cols-2 gap-3 pt-3">
+        <button class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 px-4 py-3 text-sm font-semibold text-ink-600 transition hover:border-primary-400 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:text-slate-200" data-action="click->theme#toggle">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+            <path d="M12 2a.75.75 0 01.75.75V4a.75.75 0 01-1.5 0V2.75A.75.75 0 0112 2zm5.303 2.197a.75.75 0 010 1.06l-.884.884a.75.75 0 11-1.06-1.06l.884-.884a.75.75 0 011.06 0zM21.25 11a.75.75 0 010 1.5H20a.75.75 0 010-1.5h1.25zM6.64 4.137a.75.75 0 011.06 0l.884.884a.75.75 0 11-1.06 1.06l-.884-.884a.75.75 0 010-1.06zM3 11.75A.75.75 0 013.75 11h1.25a.75.75 0 010 1.5H3.75A.75.75 0 013 11.75zm4.56 7.553a.75.75 0 010-1.06l.884-.884a.75.75 0 111.06 1.06l-.884.884a.75.75 0 01-1.06 0zM12 19a.75.75 0 01.75.75V21a.75.75 0 11-1.5 0v-1.25A.75.75 0 0112 19zm7.01-1.197a.75.75 0 10-1.06-1.06l-.884.884a.75.75 0 101.06 1.06l.884-.884zM12 7.5a4.5 4.5 0 104.5 4.5A4.505 4.505 0 0012 7.5z" />
+          </svg>
+          Modo escuro
+        </button>
+        <%= button_to destroy_user_session_path, method: :delete, class: "inline-flex items-center justify-center gap-2 rounded-2xl bg-danger px-4 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-danger/90 focus:outline-none focus:ring-2 focus:ring-danger/40" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+            <path d="M15 3h4a1 1 0 011 1v16a1 1 0 01-1 1h-4" />
+            <path d="M10 17l5-5-5-5" />
+            <path d="M15 12H3" />
+          </svg>
+          Sair
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div id="notifications_panel_container" class="hidden" data-menu-target="notificationsPanel">
+    <%= render "layouts/notifications_panel", notifications: unread_notifications, unread_count: unread_count %>
   </div>
 </nav>

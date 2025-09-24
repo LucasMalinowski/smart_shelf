@@ -1,0 +1,18 @@
+<% return if items.blank? %>
+<section class="space-y-4" id="<%= dom_id(category, :section) %>" data-filter-target="categorySection" data-category-id="<%= category.id %>">
+  <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white/80 p-3 dark:bg-surface-800/70">
+    <div class="flex items-center gap-3">
+      <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-500/15 text-xl text-primary-600 dark:bg-primary-500/20 dark:text-primary-200">
+        <%= category_icon(category) %>
+      </span>
+      <div>
+        <h2 class="text-xl font-semibold text-ink-900 dark:text-white"><%= category.name %></h2>
+        <p class="text-xs text-ink-400 dark:text-slate-400"><%= pluralize(items.size, 'item') %><%= ' nesta página' if @selected_category == 'all' %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap gap-6" id="<%= dom_id(category, :items) %>">
+    <%= render partial: 'items/inventory_card', collection: items, as: :inventory_item %>
+  </div>
+</section>

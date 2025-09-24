@@ -1,0 +1,11 @@
+<% mobile = local_assigns.fetch(:mobile, false) %>
+<% value_string = value.to_s %>
+<% active_class = 'bg-primary-500/15 text-primary-600 border-primary-300/80 shadow-soft dark:bg-primary-500/20 dark:text-primary-200' %>
+<% inactive_class = 'border-transparent text-ink-500 hover:border-primary-200 hover:text-primary-600 dark:text-slate-300 dark:hover:border-primary-400/40 dark:hover:text-primary-200' %>
+<label class="flex cursor-pointer items-center justify-between rounded-2xl border px-4 py-3 text-sm font-medium transition #{active ? active_class : inactive_class}" data-filter-target="option" data-category-value="<%= value_string %>">
+  <div class="flex items-center gap-3">
+    <span class="text-xl"><%= icon %></span>
+    <span><%= label %></span>
+  </div>
+  <%= radio_button_tag(mobile ? 'mobile-category-filter' : 'category-filter', value_string, active, class: 'sr-only', data: { filter_target: 'radio', action: 'change->filter#filterItems' }) %>
+</label>

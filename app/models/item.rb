@@ -1,6 +1,7 @@
 class Item < ApplicationRecord
   belongs_to :category
-  has_many :user_items
+  belongs_to :default_measurement_unit, class_name: "MeasurementUnit", optional: true
+  has_many :inventory_items
   has_one_attached :image
 
   # after_create :create_image
@@ -38,5 +39,9 @@ class Item < ApplicationRecord
     )
 
     JSON.parse(request.body)
+  end
+
+  def preferred_unit
+    default_measurement_unit || category.measurement_unit || MeasurementUnit.default_unit
   end
 end

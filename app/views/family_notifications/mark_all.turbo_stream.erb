@@ -1,0 +1,11 @@
+<%= turbo_stream.replace "notifications_panel_container" do %>
+  <%= render "layouts/notifications_panel", notifications: @notifications, unread_count: @unread_count %>
+<% end %>
+
+<%= turbo_stream.replace "notification_badge" do %>
+  <%= render "layouts/notification_badge", unread_count: @unread_count %>
+<% end %>
+
+<%= turbo_stream.update "flash-messages" do %>
+  <%= render "shared/flash" %>
+<% end %>

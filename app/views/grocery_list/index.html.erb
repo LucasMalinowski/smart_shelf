@@ -1,16 +1,32 @@
-<div class="container mt-4">
-  <h1 class="text-center mb-4">Minha Lista de Compras</h1>
-  <ul class="list-group">
-    <% @grocery_list_items.each do |item| %>
-      <li id="grocery_list_item_<%= item.id %>" class="list-group-item d-flex justify-content-between align-items-center">
-        <%= item.item.name %>
-        <div class="d-flex align-items-center">
-          <%= button_to '-', grocery_list_item_path(item), method: :put, params: { quantity: item.quantity - 1 }, class: 'btn btn-secondary btn-sm me-2', data: { turbo_action: 'replace' } %>
-          <%= item.quantity %>
-          <%= button_to '+', grocery_list_item_path(item), method: :put, params: { quantity: item.quantity + 1 }, class: 'btn btn-primary btn-sm ms-2', data: { turbo_action: 'replace' } %>
-          <%= button_to 'X', grocery_list_item_path(item), method: :delete, class: 'btn btn-danger btn-sm ms-2', data: { turbo_action: 'replace' } %>
+<% suggestions_count = @suggested_inventory_items.size %>
+<% total_items = @grocery_list_items.size %>
+
+<div class="space-y-10">
+  <section class="rounded-3xl bg-white/70 p-6 shadow-soft backdrop-blur dark:bg-surface-800/80">
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div class="flex flex-col gap-2">
+        <span class="text-xs font-semibold uppercase tracking-[0.4em] text-ink-400 dark:text-slate-400">Planejamento de compras</span>
+        <h1 class="text-3xl font-semibold text-ink-900 dark:text-white">Lista da família</h1>
+        <p class="text-sm text-ink-500 dark:text-slate-300">Acompanhe o que falta, veja sugestões inteligentes e registre as compras para manter o estoque alinhado.</p>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col items-start rounded-2xl bg-primary-500/10 px-4 py-3 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200">
+          <span class="text-xs uppercase tracking-wide">Itens na lista</span>
+          <span class="text-2xl font-semibold"><%= total_items %></span>
         </div>
-      </li>
-    <% end %>
-  </ul>
+        <div class="flex flex-col items-start rounded-2xl bg-warning/10 px-4 py-3 text-warning dark:bg-warning/20 dark:text-warning">
+          <span class="text-xs uppercase tracking-wide">Sugestões</span>
+          <span class="text-2xl font-semibold"><%= suggestions_count %></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="grocery_list_suggestions">
+    <%= render partial: "grocery_list/suggestions", locals: { suggested_inventory_items: @suggested_inventory_items } %>
+  </div>
+
+  <div id="grocery_list_entries">
+    <%= render partial: "grocery_list/entries", locals: { grocery_list_items: @grocery_list_items, inventory_lookup: @inventory_lookup } %>
+  </div>
 </div>

@@ -1,101 +1,115 @@
+<% theme_pref = session[:theme].presence %>
+<% theme_color = theme_pref == 'dark' ? '#0f172a' : '#f8fafc' %>
 <!DOCTYPE html>
-<html data-bs-theme="dark">
+<html lang="pt-BR" class="h-full <%= 'dark' if theme_pref == 'dark' %>">
   <head>
-    <title>SmartStorageSystem</title>
+    <title>Smart Storage System</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="<%= theme_color %>" id="theme-color" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/smart_shelf.png">
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,container-queries,line-clamp"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif']
+            },
+            colors: {
+              surface: {
+                50: '#f8fafc',
+                100: '#f1f5f9',
+                200: '#e2e8f0',
+                700: '#1e293b',
+                800: '#16213f',
+                900: '#0f172a'
+              },
+              ink: {
+                400: '#94a3b8',
+                500: '#64748b',
+                600: '#475569',
+                700: '#334155',
+                800: '#1e293b',
+                900: '#0f172a'
+              },
+              primary: {
+                100: '#ede9fe',
+                200: '#ddd6fe',
+                300: '#c4b5fd',
+                400: '#a78bfa',
+                500: '#8b5cf6',
+                600: '#7c3aed',
+                700: '#6d28d9'
+              },
+              success: '#22c55e',
+              warning: '#f59e0b',
+              danger: '#ef4444',
+              candy: {
+                blush: '#f9a8d4',
+                lilac: '#c7d2fe',
+                mint: '#bbf7d0',
+                lemon: '#fef3c7',
+                sky: '#bae6fd'
+              }
+            },
+            boxShadow: {
+              soft: '0 24px 60px -32px rgba(15, 23, 42, 0.45)',
+              panel: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 20px 45px -35px rgba(15,23,42,0.9)'
+            },
+            borderRadius: {
+              'xl': '1.25rem'
+            }
+          }
+        }
+      }
+    </script>
+
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.2/css/all.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.2/css/sharp-thin.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.2/css/sharp-solid.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.2/css/sharp-regular.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.2/css/sharp-light.css">
-    <style>
-      .main-content {
-        min-height: calc(100vh - 200px);
-        padding: 2rem 0;
-        background: var(--bs-body-bg);
-      }
-      [data-bs-theme="light"] {
-        --bs-body-bg: #eef1f4;
-        --bs-body-color: #4a5568;
-        --bs-tertiary-bg: #f8fafc;
-        --bs-border-color: #e2e8f0;
-        --bs-primary: #3b82f6;
-        --bs-primary-rgb: 59, 130, 246;
-        --bs-link-color: #3b82f6;
-        --bs-link-hover-color: #2563eb;
-        --bs-navbar-bg: #f8fafc;
-        --bs-heading-color: #374151;
-      }
-      .dropdown-toggle:hover span {
-        text-decoration: underline !important;
-      }
-      [data-bs-theme="dark"] {
-        --bs-body-bg: #1a1d20;
-        --bs-body-color: #e2e8f0;
-        --bs-tertiary-bg: #212529;
-        --bs-border-color: #2d3748;
-        --bs-primary: #3b82f6;
-        --bs-primary-rgb: 59, 130, 246;
-        --bs-link-color: #3b82f6;
-        --bs-link-hover-color: #2563eb;
-      }
-    </style>
   </head>
 
-  <body>
-    <%= render "layouts/navbar" %>
-    <div id="flash-messages" class="position-fixed top-0 end-0 p-3 d-flex flex-column" style="z-index: 1050">
-    </div>
+  <body class="min-h-screen bg-surface-50 text-ink-900 antialiased transition-colors duration-300 dark:bg-surface-900 dark:text-slate-200"
+        data-controller="theme"
+        data-action="turbo:load->theme#hydrate"
+        data-theme-authenticated-value="<%= current_user.present? %>"
+        data-theme-target="root"
+        data-theme-initial-value="<%= theme_pref %>">
+    <% if current_user %>
+      <%= render "layouts/navbar" %>
+    <% end %>
+
+    <div id="flash-messages" class="pointer-events-none fixed inset-x-0 top-24 z-40 mx-auto flex w-full max-w-md flex-col gap-3 px-4 sm:px-0"></div>
+
     <% unless current_user %>
-    <div class="container">
-      <div class="row">
-        <div class="col-12 text-center">
-          <h1 style="color: var(--bs-heading-color)">Depósito Inteligente</h1>
-          <div class="mt-3">
-            <%= link_to "Login", new_user_session_path, class: "btn btn-primary me-2" %>
-            <%= link_to "Sign up", new_user_registration_path, class: "btn btn-outline-primary" %>
+      <section class="flex flex-col items-center justify-center gap-6 px-6 py-20 text-center">
+        <div class="flex w-full max-w-xl flex-col gap-6 rounded-3xl bg-white/80 p-10 shadow-soft backdrop-blur dark:bg-surface-800/80">
+          <div class="flex flex-col gap-2">
+            <span class="text-sm uppercase tracking-widest text-primary-400">Smart Shelf</span>
+            <h1 class="text-4xl font-semibold text-ink-900 dark:text-white">Depósito inteligente para a casa toda</h1>
+            <p class="text-base text-ink-500 dark:text-slate-300">Gerencie o estoque da família, receba alertas antes de faltar e mantenha tudo organizado em um só lugar.</p>
+          </div>
+          <div class="flex flex-col justify-center gap-3 sm:flex-row">
+            <%= link_to "Entrar", new_user_session_path, class: "inline-flex items-center justify-center rounded-full bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-surface-900" %>
+            <%= link_to "Criar conta", new_user_registration_path, class: "inline-flex items-center justify-center rounded-full border border-primary-200 px-6 py-3 text-sm font-semibold text-primary-600 transition hover:border-primary-300 hover:text-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-200 focus:ring-offset-2 focus:ring-offset-white dark:border-primary-400/60 dark:text-primary-300 dark:hover:text-primary-200 dark:focus:ring-offset-surface-900" %>
           </div>
         </div>
-      </div>
-    </div>
-  <% end %>
-    <div class="main-content">
-      <div class="container">
-        <%= yield %>
-      </div>
-    </div>
+      </section>
+    <% end %>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const darkModeToggle = document.getElementById('darkModeToggle');
-        const html = document.documentElement;
-        const icon = darkModeToggle.querySelector('i');
-        
-        function updateIcon(isDark) {
-          icon.classList.remove('fa-sun', 'fa-moon');
-          icon.classList.add(isDark ? 'fa-moon' : 'fa-sun');
-        }
-
-        darkModeToggle.addEventListener('click', () => {
-          const currentTheme = html.getAttribute('data-bs-theme');
-          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-          html.setAttribute('data-bs-theme', newTheme);
-          localStorage.setItem('theme', newTheme);
-          updateIcon(newTheme === 'dark');
-        });
-
-        // Set initial state based on localStorage or default to dark
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        html.setAttribute('data-bs-theme', savedTheme);
-        updateIcon(savedTheme === 'dark');
-      });
-    </script>
+    <main class="relative mx-auto w-full max-w-7xl px-4 pb-24 pt-10 sm:px-6 lg:px-8">
+      <%= render "shared/flash" %>
+      <%= yield %>
+    </main>
   </body>
 </html>

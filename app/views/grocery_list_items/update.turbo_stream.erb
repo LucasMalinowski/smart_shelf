@@ -1,3 +1,7 @@
-<%= turbo_stream.replace "grocery_list_item_#{params[:id]}" do %>
-  <%= render partial: 'grocery_list_item', locals: { item: current_user.grocery_list_items.find(params[:id]) } %>
+<%= turbo_stream.replace "grocery_list_entries" do %>
+  <%= render partial: "grocery_list/entries", locals: { grocery_list_items: @grocery_list_items, inventory_lookup: @inventory_lookup } %>
+<% end %>
+
+<%= turbo_stream.update "flash-messages" do %>
+  <%= render "shared/flash" %>
 <% end %>

@@ -1,0 +1,5 @@
+<%= turbo_stream.remove "inventory_item_#{@inventory_item.id}" %>
+
+<%= turbo_stream.update "flash-messages" do %>
+  <%= render "shared/flash" %>
+<% end %>

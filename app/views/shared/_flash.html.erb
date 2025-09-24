@@ -1,33 +1,27 @@
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
-  <div class="toast-container">
-    <% flash.each do |message_type, message| %>
-      <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-          <% if message_type == "notice" %>
-            <i class="fas fa-check-circle text-success me-2"></i>
-          <% elsif message_type == "alert" %>
-            <i class="fas fa-exclamation-circle text-danger me-2"></i>
-          <% end %>
-          <strong class="me-auto">
-            <%= message_type.capitalize %>
-          </strong>
-          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-          <%= message %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-</div>
+<% flash.each do |type, message| %>
+  <% badge_classes, icon_path = case type.to_sym
+    when :notice
+      ["bg-primary-500/15 text-primary-700 dark:bg-primary-500/20 dark:text-primary-200", "M12 3v4m0 10v4m9-9h-4M7 12H3m12.364-4.95l2.829-2.828M7.757 16.243l-2.83 2.829m12.021 0l2.829-2.829M7.757 7.757L4.928 4.93" ]
+    when :alert
+      ["bg-danger/20 text-danger dark:bg-danger/30 dark:text-danger", "M12 9v4m0 4h.01M4.93 4.93l14.14 14.14" ]
+    else
+      ["bg-success/15 text-success dark:bg-success/25 dark:text-success", "M5 13l4 4L19 7" ]
+  end %>
 
-<script>
-  document.addEventListener('turbo:load', function() {
-    const toasts = document.querySelectorAll('.toast');
-    toasts.forEach(toast => {
-      setTimeout(() => {
-        toast.remove();
-      }, 3000);
-    });
-  });
-</script>
+  <div class="pointer-events-auto mb-3 flex w-full max-w-xl items-start gap-3 rounded-3xl bg-white/90 p-4 text-sm shadow-soft backdrop-blur transition will-change-transform hover:translate-y-[-2px] dark:bg-surface-800/95" data-controller="flash" data-flash-timeout-value="4500">
+    <span class="flex h-10 w-10 flex-none items-center justify-center rounded-2xl <%= badge_classes %>">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+        <path d="<%= icon_path %>" />
+      </svg>
+    </span>
+    <div class="flex flex-1 flex-col gap-1">
+      <span class="text-xs font-semibold uppercase tracking-wide text-ink-400 dark:text-slate-400"><%= type.to_s.humanize %></span>
+      <p class="text-sm font-medium text-ink-700 dark:text-slate-100"><%= message %></p>
+    </div>
+    <button type="button" class="flex h-8 w-8 flex-none items-center justify-center rounded-xl bg-surface-100 text-ink-400 transition hover:bg-surface-200 hover:text-ink-600 dark:bg-white/10 dark:text-slate-400 dark:hover:bg-white/20" data-action="click->flash#dismiss">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+        <path d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+<% end %>

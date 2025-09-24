@@ -1,35 +1,40 @@
-<div class="login-page ">
-  <div class="login-shape login-shape-1"></div>
-  <div class="login-shape login-shape-2"></div>
-  
-  <div class="login-container">
-    <h2>Login</h2>
+<div class="space-y-6">
+  <%= render "devise/shared/error_messages", resource: resource %>
 
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-      <div class="field">
-        <%= f.label :email, "Email" %>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Enter email" %>
-      </div>
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-6" }) do |f| %>
+    <div class="space-y-2">
+      <%= f.label :email, "E-mail", class: "block text-sm font-semibold text-ink-500 dark:text-slate-200" %>
+      <%= f.email_field :email,
+            autofocus: true,
+            autocomplete: "email",
+            placeholder: "seu@email.com",
+            class: "w-full rounded-2xl border border-ink-200/70 bg-white/80 px-4 py-3 text-base text-ink-700 shadow-soft transition focus:border-primary-300 focus:outline-none focus:ring-4 focus:ring-primary-200/60 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:focus:border-primary-500 dark:focus:ring-primary-500/30"
+      %>
+    </div>
 
-      <div class="field">
-        <%= f.label :password %>
-        <%= f.password_field :password, autocomplete: "current-password", placeholder: "••••••" %>
-      </div>
+    <div class="space-y-2">
+      <%= f.label :password, "Senha", class: "block text-sm font-semibold text-ink-500 dark:text-slate-200" %>
+      <%= f.password_field :password,
+            autocomplete: "current-password",
+            placeholder: "••••••••",
+            class: "w-full rounded-2xl border border-ink-200/70 bg-white/80 px-4 py-3 text-base text-ink-700 shadow-soft transition focus:border-primary-300 focus:outline-none focus:ring-4 focus:ring-primary-200/60 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:focus:border-primary-500 dark:focus:ring-primary-500/30"
+      %>
+    </div>
 
-      <% if devise_mapping.rememberable? %>
-        <div class="remember-me">
-          <%= f.check_box :remember_me %>
-          <%= f.label :remember_me %>
-        </div>
-      <% end %>
-
-      <div class="actions">
-        <%= f.submit "Log In", class: "login-button" %>
+    <% if devise_mapping.rememberable? %>
+      <div class="flex items-center justify-between">
+        <label class="inline-flex items-center gap-2 text-sm text-ink-500 dark:text-slate-300">
+          <%= f.check_box :remember_me, class: "h-4 w-4 rounded border-ink-300 text-primary-600 focus:ring-primary-500" %>
+          Lembrar-me
+        </label>
+        <%= link_to "Esqueci a senha", new_password_path(resource_name), class: "text-sm font-semibold text-primary-600 transition hover:text-primary-700 dark:text-primary-300 dark:hover:text-primary-200" %>
       </div>
     <% end %>
 
-    <div class="links">
-      <%= render "devise/shared/links" %>
+    <div class="pt-2">
+      <%= f.submit "Entrar", class: "inline-flex w-full items-center justify-center rounded-full bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-surface-900" %>
     </div>
-  </div>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
 </div>

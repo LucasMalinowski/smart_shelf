@@ -1,0 +1,29 @@
+<%= turbo_stream.replace 'inventory_counter' do %>
+  <%= render 'items/loaded_counter', count: @loaded_count %>
+<% end %>
+
+<% ordered_categories = @ordered_categories || [] %>
+<% inserted_ids = @loaded_category_ids.dup %>
+
+<% @inventory_items_by_category.each do |category, items| %>
+  <% if inserted_ids.include?(category.id) %>
+    <%= turbo_stream.append dom_id(category, :items) do %>
+      <%= render partial: 'items/inventory_card', collection: items, as: :inventory_item %>
+    <% end %>
+  <% else %>
+    <% preceding_category = ordered_categories.take_while { |cat| cat.id != category.id }.reverse.find { |cat| inserted_ids.include?(cat.id) } %>
+    <% action = if preceding_category.present?
+                  [:after, dom_id(preceding_category, :section)]
+                else
+                  [:prepend, 'inventory_items']
+                end %>
+    <%= turbo_stream.public_send(action.first, action.last) do %>
+      <%= render 'items/category_section', category: category, items: items %>
+    <% end %>
+    <% inserted_ids << category.id %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.replace 'inventory_pagination' do %>
+  <%= render 'items/pagination', next_page: @next_page, request_params: request.query_parameters %>
+<% end %>

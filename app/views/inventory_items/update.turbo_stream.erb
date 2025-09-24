@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "inventory_item_#{@inventory_item.id}" do %>
+  <%= render "items/inventory_card", inventory_item: @inventory_item %>
+<% end %>
+
+<%= turbo_stream.update "flash-messages" do %>
+  <%= render "shared/flash" %>
+<% end %>

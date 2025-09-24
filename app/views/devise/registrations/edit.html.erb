@@ -1,43 +1,73 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
-
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+<div class="space-y-10">
+  <div>
+    <h2 class="text-2xl font-semibold text-ink-900 dark:text-white">Detalhes da conta</h2>
+    <p class="text-sm text-ink-500 dark:text-slate-300">Atualize informações da sua conta e mantenha a família sincronizada.</p>
   </div>
 
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "space-y-8" }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div class="grid gap-6">
+      <div class="space-y-2">
+        <%= f.label :email, "E-mail", class: "block text-sm font-semibold text-ink-500 dark:text-slate-200" %>
+        <%= f.email_field :email,
+              autofocus: true,
+              autocomplete: "email",
+              class: "w-full rounded-2xl border border-ink-200/70 bg-white/80 px-4 py-3 text-base text-ink-700 shadow-soft transition focus:border-primary-300 focus:outline-none focus:ring-4 focus:ring-primary-200/60 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:focus:border-primary-500 dark:focus:ring-primary-500/30"
+        %>
+      </div>
+
+      <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+        <div class="rounded-2xl border border-warning/30 bg-warning/10 p-3 text-sm text-warning">
+          Aguardando confirmação para: <%= resource.unconfirmed_email %>
+        </div>
+      <% end %>
+
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <%= f.label :password, "Nova senha", class: "block text-sm font-semibold text-ink-500 dark:text-slate-200" %>
+          <span class="text-xs text-ink-400 dark:text-slate-400">Deixe em branco para manter a atual</span>
+        </div>
+        <%= f.password_field :password,
+              autocomplete: "new-password",
+              class: "w-full rounded-2xl border border-ink-200/70 bg-white/80 px-4 py-3 text-base text-ink-700 shadow-soft transition focus:border-primary-300 focus:outline-none focus:ring-4 focus:ring-primary-200/60 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:focus:border-primary-500 dark:focus:ring-primary-500/30"
+        %>
+        <% if @minimum_password_length %>
+          <p class="text-xs text-ink-400 dark:text-slate-400">Mínimo de <%= @minimum_password_length %> caracteres.</p>
+        <% end %>
+      </div>
+
+      <div class="space-y-2">
+        <%= f.label :password_confirmation, "Confirmar nova senha", class: "block text-sm font-semibold text-ink-500 dark:text-slate-200" %>
+        <%= f.password_field :password_confirmation,
+              autocomplete: "new-password",
+              class: "w-full rounded-2xl border border-ink-200/70 bg-white/80 px-4 py-3 text-base text-ink-700 shadow-soft transition focus:border-primary-300 focus:outline-none focus:ring-4 focus:ring-primary-200/60 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:focus:border-primary-500 dark:focus:ring-primary-500/30"
+        %>
+      </div>
+
+      <div class="space-y-2">
+        <%= f.label :current_password, "Senha atual", class: "block text-sm font-semibold text-ink-500 dark:text-slate-200" %>
+        <p class="text-xs text-ink-400 dark:text-slate-400">Necessária para confirmar qualquer alteração.</p>
+        <%= f.password_field :current_password,
+              autocomplete: "current-password",
+              class: "w-full rounded-2xl border border-ink-200/70 bg-white/80 px-4 py-3 text-base text-ink-700 shadow-soft transition focus:border-primary-300 focus:outline-none focus:ring-4 focus:ring-primary-200/60 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:focus:border-primary-500 dark:focus:ring-primary-500/30"
+        %>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-4">
+      <%= link_to "Voltar", root_path, class: "inline-flex items-center justify-center rounded-full border border-ink-200/70 px-5 py-2.5 text-sm font-semibold text-ink-600 transition hover:border-primary-300 hover:text-primary-600 dark:border-white/10 dark:text-slate-200 dark:hover:border-primary-400 dark:hover:text-primary-200" %>
+      <%= f.submit "Salvar alterações", class: "inline-flex items-center justify-center rounded-full bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-300 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-surface-900" %>
+    </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-    <% if @minimum_password_length %>
-      <br />
-      <em><%= @minimum_password_length %> characters minimum</em>
-    <% end %>
+  <div class="divide-y divide-ink-100 rounded-3xl border border-danger/20 bg-danger/5 text-sm text-danger dark:divide-white/10 dark:border-danger/30 dark:bg-danger/10 dark:text-danger">
+    <div class="flex items-center justify-between gap-3 p-4">
+      <div>
+        <h3 class="text-base font-semibold">Cancelar conta</h3>
+        <p class="text-xs text-danger/80 dark:text-danger/70">Essa ação remove seu acesso à família. Irreversível.</p>
+      </div>
+      <%= button_to "Encerrar", registration_path(resource_name), method: :delete, data: { confirm: "Tem certeza?", turbo_confirm: "Tem certeza?" }, class: "inline-flex items-center justify-center rounded-full bg-danger px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-soft transition hover:bg-danger/90 focus:outline-none focus:ring-2 focus:ring-danger/40" %>
+    </div>
   </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-    <%= f.password_field :current_password, autocomplete: "current-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Update" %>
-  </div>
-<% end %>
-
-<h3>Cancel my account</h3>
-
-<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
-
-<%= link_to "Back", :back %>
+</div>
