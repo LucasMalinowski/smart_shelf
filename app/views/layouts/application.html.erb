@@ -89,7 +89,7 @@
       <%= render "layouts/navbar" %>
     <% end %>
 
-    <div id="flash-messages" class="pointer-events-none fixed inset-x-0 top-24 z-40 mx-auto flex w-full max-w-md flex-col gap-3 px-4 sm:px-0"></div>
+    <%= render "shared/flash" %>
 
     <% unless current_user %>
       <section class="flex flex-col items-center justify-center gap-6 px-6 py-20 text-center">
@@ -108,7 +108,6 @@
     <% end %>
 
     <main class="relative mx-auto w-full max-w-7xl px-4 pb-24 pt-10 sm:px-6 lg:px-8">
-      <%= render "shared/flash" %>
       <%= yield %>
     </main>
   </body>
