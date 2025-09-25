@@ -32,6 +32,7 @@
       <%= link_to "Despensa", root_path, class: "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition #{current_page?(root_path) ? 'bg-primary-500/15 text-primary-600 shadow-soft dark:bg-primary-400/10 dark:text-primary-300' : 'text-ink-500 hover:bg-surface-100 hover:text-ink-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white'}" %>
       <%= link_to "Lista de compras", grocery_list_path, class: "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition #{current_page?(grocery_list_path) ? 'bg-primary-500/15 text-primary-600 shadow-soft dark:bg-primary-400/10 dark:text-primary-300' : 'text-ink-500 hover:bg-surface-100 hover:text-ink-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white'}" %>
       <a href="#" class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-ink-500 transition hover:bg-surface-100 hover:text-ink-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white">Conexão Alexa</a>
+      <%= link_to "Configurações", settings_path, class: "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition #{current_page?(settings_path) ? 'bg-primary-500/15 text-primary-600 shadow-soft dark:bg-primary-400/10 dark:text-primary-300' : 'text-ink-500 hover:bg-surface-100 hover:text-ink-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white'}" %>
     </div>
 
     <div class="hidden items-center gap-4 md:flex">
@@ -76,10 +77,10 @@
               <span>Meu perfil</span>
               <span class="text-xs text-ink-400 dark:text-slate-500">Em breve</span>
             </a>
-            <a href="#" class="inline-flex items-center justify-between rounded-xl px-3 py-2 text-ink-600 transition hover:bg-surface-100 hover:text-ink-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white">
+            <%= link_to settings_path, class: "inline-flex items-center justify-between rounded-xl px-3 py-2 text-ink-600 transition hover:bg-surface-100 hover:text-ink-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white" do %>
               <span>Configurações</span>
-              <span class="text-xs text-ink-400 dark:text-slate-500">Em breve</span>
-            </a>
+              <span class="text-xs text-primary-500">Atualizado</span>
+            <% end %>
           </div>
           <div class="mt-4 flex items-center justify-between rounded-xl border border-danger/30 bg-danger/10 px-3 py-2 text-danger dark:border-danger/30 dark:bg-danger/20 dark:text-danger-100">
             <span>Sair</span>
@@ -101,6 +102,7 @@
       <%= link_to "Despensa", root_path, class: "inline-flex items-center justify-between rounded-2xl px-4 py-3 text-base font-medium transition #{current_page?(root_path) ? 'bg-primary-500/15 text-primary-600 shadow-soft dark:bg-primary-500/25 dark:text-primary-200' : 'text-ink-500 hover:bg-surface-100 hover:text-ink-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white'}" %>
       <%= link_to "Lista de compras", grocery_list_path, class: "inline-flex items-center justify-between rounded-2xl px-4 py-3 text-base font-medium transition #{current_page?(grocery_list_path) ? 'bg-primary-500/15 text-primary-600 shadow-soft dark:bg-primary-500/25 dark:text-primary-200' : 'text-ink-500 hover:bg-surface-100 hover:text-ink-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white'}" %>
       <a href="#" class="inline-flex items-center justify-between rounded-2xl px-4 py-3 text-base font-medium text-ink-500 transition hover:bg-surface-100 hover:text-ink-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white">Conexão Alexa</a>
+      <%= link_to "Configurações", settings_path, class: "inline-flex items-center justify-between rounded-2xl px-4 py-3 text-base font-medium transition #{current_page?(settings_path) ? 'bg-primary-500/15 text-primary-600 shadow-soft dark:bg-primary-500/25 dark:text-primary-200' : 'text-ink-500 hover:bg-surface-100 hover:text-ink-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white'}" %>
       <div class="grid grid-cols-2 gap-3 pt-3">
         <button class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 px-4 py-3 text-sm font-semibold text-ink-600 transition hover:border-primary-400 hover:text-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:text-slate-200" data-action="click->theme#toggle">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">

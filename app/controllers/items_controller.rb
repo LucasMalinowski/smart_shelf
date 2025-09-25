@@ -4,7 +4,8 @@ class ItemsController < ApplicationController
   ITEMS_PER_PAGE = 30
 
   def index
-    @categories = Category.order(:name)
+    all_categories = Category.order(:name).to_a
+    @categories = current_user.category_sequence(all_categories)
     scope = current_user.inventory_items.includes(item: [:category, :default_measurement_unit], measurement_unit: [])
 
     @selected_category = params[:category_id].presence
@@ -15,12 +16,21 @@ class ItemsController < ApplicationController
     end
 
     scope = scope.joins(item: :category)
+    join_sql = ActiveRecord::Base.send(
+      :sanitize_sql_array,
+      [
+        'LEFT OUTER JOIN user_category_orders ON user_category_orders.category_id = items.category_id AND user_category_orders.user_id = ?',
+        current_user.id
+      ]
+    )
+    scope = scope.joins(join_sql)
+    scope = scope.where.not(id: HiddenInventoryItem.where(user: current_user).select(:inventory_item_id))
 
     if params[:sort_by].present?
       direction = params[:sort_direction] == 'desc' ? 'desc' : 'asc'
       scope = scope.order("#{params[:sort_by]} #{direction}")
     else
-      scope = scope.order('categories.name ASC, items.name ASC')
+      scope = scope.order(Arel.sql('COALESCE(user_category_orders.position, 100000) ASC, categories.name ASC, items.name ASC'))
     end
 
     category_ids = scope.unscope(:order).distinct.pluck('categories.id')

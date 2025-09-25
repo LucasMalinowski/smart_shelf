@@ -114,6 +114,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_22_103854) do
     t.index ["item_id"], name: "index_grocery_list_items_on_item_id"
   end
 
+  create_table "hidden_inventory_items", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "inventory_item_id", null: false
+    t.datetime "hidden_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["inventory_item_id"], name: "index_hidden_inventory_items_on_inventory_item_id"
+    t.index ["user_id", "inventory_item_id"], name: "index_hidden_items_on_user_and_inventory", unique: true
+    t.index ["user_id"], name: "index_hidden_inventory_items_on_user_id"
+  end
+
   create_table "inventory_items", force: :cascade do |t|
     t.bigint "item_id", null: false
     t.decimal "quantity", precision: 12, scale: 3, default: "0.0", null: false
@@ -159,6 +170,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_22_103854) do
     t.index ["name"], name: "index_measurement_units_on_name", unique: true
   end
 
+  create_table "user_category_orders", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "category_id", null: false
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_user_category_orders_on_category_id"
+    t.index ["user_id", "category_id"], name: "index_user_category_orders_on_user_id_and_category_id", unique: true
+    t.index ["user_id", "position"], name: "index_user_category_orders_on_user_id_and_position"
+    t.index ["user_id"], name: "index_user_category_orders_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -185,10 +208,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_22_103854) do
   add_foreign_key "family_notifications", "users", column: "read_by_id"
   add_foreign_key "grocery_list_items", "families"
   add_foreign_key "grocery_list_items", "items"
+  add_foreign_key "hidden_inventory_items", "inventory_items"
+  add_foreign_key "hidden_inventory_items", "users"
   add_foreign_key "inventory_items", "families"
   add_foreign_key "inventory_items", "items"
   add_foreign_key "inventory_items", "measurement_units"
   add_foreign_key "items", "categories"
   add_foreign_key "items", "measurement_units", column: "default_measurement_unit_id"
+  add_foreign_key "user_category_orders", "categories"
+  add_foreign_key "user_category_orders", "users"
   add_foreign_key "users", "families"
 end

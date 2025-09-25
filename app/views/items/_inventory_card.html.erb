@@ -39,9 +39,22 @@
           </svg>
           Adicionar à lista
         <% end %>
-        <span class="whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold <%= inventory_status_badge(status) %>">
-          <%= inventory_status_label(status) %>
-        </span>
+        <div class="flex items-center gap-2">
+          <span class="whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold <%= inventory_status_badge(status) %>">
+            <%= inventory_status_label(status) %>
+          </span>
+          <%= button_to hidden_inventory_items_path,
+                method: :post,
+                params: { inventory_item_id: inventory_item.id },
+                class: "inline-flex h-8 w-8 items-center justify-center rounded-full border border-ink-200/60 bg-white/70 text-ink-500 transition hover:border-ink-300 hover:text-ink-700 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-white/20 dark:hover:text-slate-100",
+                aria: { label: 'Ocultar item' },
+                form: { class: 'inline-block', data: { turbo_stream: true } } do %>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+              <path d="M2.25 12s3.5-6 9.75-6 9.75 6 9.75 6-3.5 6-9.75 6S2.25 12 2.25 12z" />
+              <circle cx="12" cy="12" r="2.25" />
+            </svg>
+          <% end %>
+        </div>
       </div>
     </header>
 

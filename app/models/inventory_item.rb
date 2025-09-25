@@ -4,6 +4,7 @@ class InventoryItem < ApplicationRecord
   belongs_to :family
   belongs_to :item
   belongs_to :measurement_unit, optional: true
+  has_many :hidden_inventory_items, dependent: :destroy
 
   delegate :category, to: :item
 
